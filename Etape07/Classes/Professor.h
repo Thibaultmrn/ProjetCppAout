@@ -1,0 +1,37 @@
+#ifndef PROFESSOR_H 
+#define PROFESSOR_H 
+
+#include <string>
+#include "Schedulable.h"
+#include <iostream>
+using namespace std;
+using namespace planning;
+
+class Professor : public Schedulable 
+{
+	friend ostream& operator<<(ostream&, const Professor&);
+
+
+    private:
+        string lastName;
+        string firstName;
+
+    public:
+        Professor();
+        Professor(int, const string &, const string &);
+        Professor(const Professor &);
+        ~Professor() = default;
+
+        void setLastName(const string &);
+        void setFirstName(const string &);
+
+        string getLastName() const;
+        string getFirstName() const;
+
+        string toString()const override;
+        string tuple()const override;
+
+
+    	Professor& operator=(const Professor&);
+};
+#endif
