@@ -7,6 +7,9 @@
 #include <QFileDialog>
 #include <iostream>
 #include <sstream>
+#include "Timetable.h"
+using namespace planning;
+
 using namespace std;
 
 ApplicHoraireWindow::ApplicHoraireWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::ApplicHoraireWindow)
@@ -85,7 +88,7 @@ ApplicHoraireWindow::ApplicHoraireWindow(QWidget *parent) : QMainWindow(parent),
     move((QApplication::desktop()->width()-width())/2,(QApplication::desktop()->height()-height())/2);
 
     // Tests a supprimer ------------------------------------------------
-    addTupleTableProfessors("1;Wagner;Jean-Marc");
+    /*addTupleTableProfessors("1;Wagner;Jean-Marc");
     addTupleTableProfessors("4;Leonard;Anne");
     addTupleTableProfessors("6;Quettier;Patrick");
 
@@ -101,7 +104,7 @@ ApplicHoraireWindow::ApplicHoraireWindow(QWidget *parent) : QMainWindow(parent),
 
     addTupleTableCourses("1;Lundi;8h30;2h00;AN;Théorie C++;Wagner Jean-Marc;INFO2 D201,INFO2 D202");
     addTupleTableCourses("3;Mardi;10h30;1h30;AN;Théorie UNIX;Quettier Patrick;INFO2 R201,INFO2 R202");
-    addTupleTableCourses("4;Jeudi;13h30;2h00;LE0;Labo C++;Leonard Anne;INFO2 I201");
+    addTupleTableCourses("4;Jeudi;13h30;2h00;LE0;Labo C++;Leonard Anne;INFO2 I201");*/
     // -------------------------------------------------------------------
 }
 
@@ -485,20 +488,92 @@ void ApplicHoraireWindow::setClassroomChecked(bool b) {
 void ApplicHoraireWindow::on_pushButtonAjouterProfesseur_clicked() {
     cout << "Clic sur bouton Ajouter Professeur" << endl;
     // TO DO (Etape 9)
+    string lastName = getProfessorLastName();
+    string firstName = getProfessorFirstName();
 
+    if (lastName.empty()) 
+    {
+        dialogError("Erreur pnom", "Le nom du professeur ne peut pas être vide.");
+        return;
+    }
+    else if(firstName.empty())
+    {
+        dialogError("Erreur prenom", "Le prenom du professeur ne peut pas être vide.");
+        return;
+    }
+
+    //recupere les professeurs et ajoute un nouveau dans la liste (a revoir pas claire)
+    Timetable& instance =Timetable::getInstance();
+    instance.addProfessor(lastName, firstName);
+
+    clearTableProfessors(); 
+
+    const auto& professors = instance.getProfessors();
+
+    for (const auto& professor : professors) 
+    {
+        addTupleTableProfessors(professor.tuple());
+    }
+
+    setProfessorFirstName("");
+    setProfessorLastName("");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ApplicHoraireWindow::on_pushButtonAjouterGroupe_clicked() {
     cout << "Clic sur bouton Ajouter Groupe" << endl;
     // TO DO (Etape 9)
+    string name = getGroupName();
 
+    if (name.empty()) 
+    {
+        dialogError("Erreur Nom", "Nom du groupe vide !");
+        return;
+    }
+
+    Timetable& instance = Timetable::getInstance();
+    instance.addGroup(name);
+
+    clearTableGroups();
+
+    const auto& groups = instance.getGroups(); 
+
+    for (const auto& group : groups) 
+    {
+        addTupleTableGroups(group.tuple());
+    }
+
+    clearGroupName();
+    dialogMessage("Succès", "Groupe ajouté avec succès !");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ApplicHoraireWindow::on_pushButtonAjouterLocal_clicked() {
     cout << "Clic sur bouton Ajouter Local" << endl;
     // TO DO (Etape 9)
+    string name = getClassroomName();
+    int capacity = dialogInputInt("Capacité", "Entrez la capacité de la salle :");
+
+    if (name.empty() || capacity <= 0) 
+    {
+        dialogError("Erreur", "Nom ou capacité invalide !");
+        return;
+    }
+ 
+    Timetable& instance = Timetable::getInstance();
+    instance.addClassroom(name, capacity);
+
+    
+    clearTableClassrooms();
+
+    const auto& classrooms = instance.getClassrooms(); 
+
+    for (const auto& classroom : classrooms) 
+    {
+        addTupleTableClassrooms(classroom.tuple());
+    }
+
+    dialogMessage("Succès", "Local ajouté avec succès !");
 
 }
 
@@ -506,21 +581,84 @@ void ApplicHoraireWindow::on_pushButtonAjouterLocal_clicked() {
 void ApplicHoraireWindow::on_pushButtonSupprimerProfesseur_clicked() {
     cout << "Clic sur bouton Supprimer Professeur" << endl;
     // TO DO (Etape 9)
+    int index = getIndexProfessorSelection();
 
+    if (index == -1) 
+    {
+        dialogError("Erreur", "Aucun professeur sélectionné !");
+        return;
+    }
+
+    Timetable& instance = Timetable::getInstance();
+    instance.deleteProfessorByIndex(index);
+
+    clearTableProfessors();
+
+    const auto& professors = instance.getProfessors();
+
+    for (const auto& professor : professors) 
+    {
+        addTupleTableProfessors(professor.tuple());
+    }
+    dialogMessage("Succes","Professeur Supprimer avec succes !");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ApplicHoraireWindow::on_pushButtonSupprimerGroupe_clicked() {
     cout << "Clic sur bouton Supprimer Groupe" << endl;
     // TO DO (Etape 9)
+    list<int> indices = getIndexesGroupsSelection();
 
+    if (indices.empty()) 
+    {
+        dialogError("Erreur", "Aucun groupe sélectionné !");
+        return;
+    }
+
+    indices.sort(greater<int>());  // il faut inverser les indexes dans le containers indexes pour une bonne suppression 
+
+    Timetable& instance = Timetable::getInstance();
+ 
+    for(int index : indices)
+    {
+        instance.deleteGroupByIndex(index);
+    }
+
+    clearTableGroups();
+
+    const auto& groups = instance.getGroups();
+
+    for (const auto& group : groups) 
+    {
+        addTupleTableGroups(group.tuple());
+    }
+    dialogMessage("Succès", "Groupe supprimé avec succès !");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ApplicHoraireWindow::on_pushButtonSupprimerLocal_clicked() {
     cout << "Clic sur bouton Supprimer Local" << endl;
     // TO DO (Etape 9)
+    int index = getIndexClassroomSelection();
 
+    if (index == -1) 
+    {
+        dialogError("Erreur", "Aucun local sélectionné !");
+        return;
+    }
+
+    Timetable& instance = Timetable::getInstance();
+    instance.deleteClassroomByIndex(index);
+
+    clearTableClassrooms();
+
+    const auto& classrooms = instance.getClassrooms();
+
+    for (const auto& classroom : classrooms) 
+    {
+        addTupleTableClassrooms(classroom.tuple());
+    }
+    dialogMessage("Succès", "Local supprimé avec succès !");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -553,7 +691,38 @@ void ApplicHoraireWindow::on_actionOuvrir_triggered()
 {
     cout << "Clic sur Menu Fichier --> Item Ouvrir" << endl;
     // TO DO (Etape 10)
+    string nomFichier = dialogInputText("Ouvrir l'horaire", "Entrez le nom de l'horaire à ouvrir :");
 
+    if (nomFichier.empty()) 
+    {
+        dialogError("Erreur", "Le nom de l'horaire ne peut pas être vide.");
+        return;
+    }
+    
+    Timetable& instance = planning::Timetable::getInstance();
+    instance.load(nomFichier);
+
+    // Met à jour les tables
+    clearTableProfessors();
+    clearTableGroups();
+    clearTableClassrooms();
+
+    for (const auto& professor : instance.getProfessors()) 
+    {
+        addTupleTableProfessors(professor.tuple());
+    }
+
+    for (const auto& group : instance.getGroups()) 
+    {
+        addTupleTableGroups(group.tuple());
+    }
+    clearTableClassrooms();
+    for (const auto& classroom : instance.getClassrooms()) 
+    {
+        addTupleTableClassrooms(classroom.tuple());
+    }
+
+    dialogMessage("Ouverture réussie", "L'horaire a été chargé avec succès.");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -561,7 +730,19 @@ void ApplicHoraireWindow::on_actionNouveau_triggered()
 {
     cout << "Clic sur Menu Fichier --> Item Nouveau" << endl;
     // TO DO (Etape 10)
+    
+    // Vider tous les conteneurs
+    Timetable::getInstance().vider();
 
+    // Réinitialiser l'ID des éléments
+    Schedulable::setCurrentId(1);
+
+    // Vider les tables (inutile de les remplir, elles sont maintenant vides)
+    clearTableProfessors();
+    clearTableGroups();
+    clearTableClassrooms();
+
+    dialogMessage("Nouvel horaire", "Un nouvel horaire a été créé.");
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -569,6 +750,19 @@ void ApplicHoraireWindow::on_actionEnregistrer_triggered()
 {
     cout << "Clic sur Menu Fichier --> Item Enregistrer" << endl;
     // TO DO (Etape 10)
+    string nomFichier  = dialogInputText("Enregistrer l'horaire", "Entrez le nom de l'horaire :");
+
+    if (nomFichier .empty()) 
+    {
+        dialogError("Erreur", "Le nom de l'horaire ne peut pas être vide.");
+        return;
+    }
+    
+    // Récupérer l'instance de Timetable et appel methode save 
+    Timetable& instance = planning::Timetable::getInstance();
+    instance.save(nomFichier);
+
+    dialogMessage("Enregistrement réussi", "L'horaire a été enregistré avec succès.");
 
 }
 
@@ -577,6 +771,20 @@ void ApplicHoraireWindow::on_actionSupprimerProfesseur_triggered() {
     cout << "Clic sur Menu Supprimer --> Item Professeur" << endl;
     // TO DO (Etape 9)
 
+    int id = dialogInputInt("Supprimer Professeur", "Entrez l'ID du professeur à supprimer :");
+
+    Timetable::getInstance().deleteProfessorById(id);
+
+    
+    clearTableProfessors();
+
+    const auto& professors = Timetable::getInstance().getProfessors();
+
+    for (const auto& professor : professors) 
+    {
+        addTupleTableProfessors(professor.tuple());
+    }
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -584,13 +792,37 @@ void ApplicHoraireWindow::on_actionSupprimerGroupe_triggered() {
     cout << "Clic sur Menu Supprimer --> Item Groupe" << endl;
     // TO DO (Etape 9)
 
+    int id = dialogInputInt("Supprimer Groupe", "Entrez l'ID du groupe à supprimer :");
+
+    Timetable::getInstance().deleteGroupById(id);
+
+    clearTableGroups();
+
+    const auto& groups = Timetable::getInstance().getGroups();
+
+    for (const auto& group : groups) 
+    {
+        addTupleTableGroups(group.tuple());
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 void ApplicHoraireWindow::on_actionSupprimerLocal_triggered() {
     cout << "Clic sur Menu Supprimer --> Item Local" << endl;
     // TO DO (Etape 9)
+    
+    int id = dialogInputInt("Supprimer Local", "Entrez l'ID du local à supprimer :");
 
+    Timetable::getInstance().deleteClassroomById(id);
+
+    clearTableClassrooms();
+
+    const auto& classrooms = Timetable::getInstance().getClassrooms();
+
+    for (const auto& classroom : classrooms) 
+    {
+        addTupleTableClassrooms(classroom.tuple());
+    }
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////
