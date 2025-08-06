@@ -1,38 +1,40 @@
 #include <iostream>
 using namespace std;
 
-#include "Timetable.h"
+#include "Classes/Timetable.h"
+using namespace planning;
+
 
 int  Menu();
-void Essai1();
-void Essai2();
-void Essai3();
+void Essai1(Timetable&);
+void Essai2(Timetable&);
+void Essai3(Timetable&);
 
 int main(int argc,char* argv[])
 {
   // Creation de l'horaire
-  // inutile !
+  Timetable t;
 
   // Ajout de locaux
-  Timetable::getInstance().addClassroom("LP01",35);                  // id = 1
-  Timetable::getInstance().addClassroom("AN",110);                   // id = 2
-  Timetable::getInstance().addClassroom("PV12",20);                  // id = 3
-  Timetable::getInstance().addClassroom("PV11",20);                  // id = 4
-  Timetable::getInstance().addClassroom("LE0",25);                   // id = 5
+  t.addClassroom("LP01",35);                  // id = 1
+  t.addClassroom("AN",110);                   // id = 2
+  t.addClassroom("PV12",20);                  // id = 3
+  t.addClassroom("PV11",20);                  // id = 4
+  t.addClassroom("LE0",25);                   // id = 5
 
   // Ajout de professeurs
-  Timetable::getInstance().addProfessor("Wagner","Jean-Marc");       // id = 6
-  Timetable::getInstance().addProfessor("Quettier","Patrick");       // id = 7
-  Timetable::getInstance().addProfessor("Leonard","Anne");           // id = 8
-  Timetable::getInstance().addProfessor("Matagne","Xavier");         // id = 9
+  t.addProfessor("Wagner","Jean-Marc");       // id = 6
+  t.addProfessor("Quettier","Patrick");       // id = 7
+  t.addProfessor("Leonard","Anne");           // id = 8
+  t.addProfessor("Matagne","Xavier");         // id = 9
 
   // Ajout de groupes
-  Timetable::getInstance().addGroup("INFO2_D201");                   // id = 10
-  Timetable::getInstance().addGroup("INFO2_R202");                   // id = 11
-  Timetable::getInstance().addGroup("INFO2_I201");                   // id = 12
-  Timetable::getInstance().addGroup("INFO2_D202");                   // id = 13
-  Timetable::getInstance().addGroup("INFO2_I202");                   // id = 14
-  Timetable::getInstance().addGroup("INFO2_R201");                   // id = 15
+  t.addGroup("INFO2_D201");                   // id = 10
+  t.addGroup("INFO2_R202");                   // id = 11
+  t.addGroup("INFO2_I201");                   // id = 12
+  t.addGroup("INFO2_D202");                   // id = 13
+  t.addGroup("INFO2_I202");                   // id = 14
+  t.addGroup("INFO2_R201");                   // id = 15
 
   int choix;
   bool fini = false; 
@@ -42,9 +44,9 @@ int main(int argc,char* argv[])
     else choix = Menu();
     switch(choix)
     {
-      case 1 : Essai1(); break;
-      case 2 : Essai2(); break;
-      case 3 : Essai3(); break;
+      case 1 : Essai1(t); break;
+      case 2 : Essai2(t); break;
+      case 3 : Essai3(t); break;
       default : fini = true ; break;
     }
   }
@@ -56,7 +58,7 @@ int Menu()
 {
   cout << endl;
   cout << "---------------------------------------------------------------------------" << endl;
-  cout << "--- JEU DE TEST 8b --------------------------------------------------------" << endl;
+  cout << "--- JEU DE TEST 8a --------------------------------------------------------" << endl;
   cout << "---------------------------------------------------------------------------" << endl;
   cout << " 1. Tests du conteneur d'objets Classroom de la classe Timetable" << endl;
   cout << " 2. Tests du conteneur d'objets Professor de la classe Timetable" << endl;
@@ -71,76 +73,76 @@ int Menu()
 }
 
 /*******************************************************************************************************/
-void Essai1()
+void Essai1(Timetable& t)
 {
   cout << "////////// Avant ///////////////////////////////////////////////////////////////////////" << endl;
-  Timetable::getInstance().displayClassrooms();
+  t.displayClassrooms();
 
   cout << "////////// Recherches //////////////////////////////////////////////////////////////////" << endl;
-  cout << "Classroom d'indice 3 = " << Timetable::getInstance().findClassroomByIndex(3).toString() << endl;
-  cout << "Classroom d'id 1     = " << Timetable::getInstance().findClassroomById(1).toString() << endl;
+  cout << "Classroom d'indice 3 = " << t.findClassroomByIndex(3).toString() << endl;
+  cout << "Classroom d'id 1     = " << t.findClassroomById(1).toString() << endl;
   cout << endl;
 
   cout << "////////// Suppression par indice (1) //////////////////////////////////////////////////" << endl;
-  Timetable::getInstance().deleteClassroomByIndex(1);
+  t.deleteClassroomByIndex(1);
 
   cout << "////////// Apres suppression par indice (1) ////////////////////////////////////////////" << endl;
-  Timetable::getInstance().displayClassrooms();
+  t.displayClassrooms();
 
   cout << "////////// Suppression par id //////////////////////////////////////////////////////////" << endl;
   cout << "--> Suppression Classroom id=4" << endl << endl;
-  Timetable::getInstance().deleteClassroomById(4);
+  t.deleteClassroomById(4);
 
   cout << "////////// Apres suppression par id ////////////////////////////////////////////////////" << endl;
-  Timetable::getInstance().displayClassrooms();
+  t.displayClassrooms();
 }
 
 /*******************************************************************************************************/
-void Essai2()
+void Essai2(Timetable& t)
 {
   cout << "////////// Avant ///////////////////////////////////////////////////////////////////////" << endl;
-  Timetable::getInstance().displayProfessors();
+  t.displayProfessors();
 
   cout << "////////// Recherches //////////////////////////////////////////////////////////////////" << endl;
-  cout << "Professor d'indice 3 = " << Timetable::getInstance().findProfessorByIndex(3).toString() << endl;
-  cout << "Professor d'id 7     = " << Timetable::getInstance().findProfessorById(7).toString() << endl;
+  cout << "Professor d'indice 3 = " << t.findProfessorByIndex(3).toString() << endl;
+  cout << "Professor d'id 7     = " << t.findProfessorById(7).toString() << endl;
   cout << endl;
 
   cout << "////////// Suppression par indice (1) //////////////////////////////////////////////////" << endl;
-  Timetable::getInstance().deleteProfessorByIndex(1);
+  t.deleteProfessorByIndex(1);
 
   cout << "////////// Apres suppression par indice (1) ////////////////////////////////////////////" << endl;
-  Timetable::getInstance().displayProfessors();
+  t.displayProfessors();
 
   cout << "////////// Suppression par id //////////////////////////////////////////////////////////" << endl;
   cout << "--> Suppression Professor id=7" << endl << endl;
-  Timetable::getInstance().deleteProfessorById(7);
+  t.deleteProfessorById(7);
 
   cout << "////////// Apres suppression par id ////////////////////////////////////////////////////" << endl;
-  Timetable::getInstance().displayProfessors();
+  t.displayProfessors();
 }
 
 /*******************************************************************************************************/
-void Essai3()
+void Essai3(Timetable& t)
 {
   cout << "////////// Avant ///////////////////////////////////////////////////////////////////////" << endl;
-  Timetable::getInstance().displayGroups();
+  t.displayGroups();
 
   cout << "////////// Recherches //////////////////////////////////////////////////////////////////" << endl;
-  cout << "Group d'indice 3  = " << Timetable::getInstance().findGroupByIndex(3).toString() << endl;
-  cout << "Professor d'id 14 = " << Timetable::getInstance().findGroupById(14).toString() << endl;
+  cout << "Group d'indice 3  = " << t.findGroupByIndex(3).toString() << endl;
+  cout << "Professor d'id 14 = " << t.findGroupById(14).toString() << endl;
   cout << endl;
 
   cout << "////////// Suppression par indice (1) //////////////////////////////////////////////////" << endl;
-  Timetable::getInstance().deleteGroupByIndex(1);
+  t.deleteGroupByIndex(1);
 
   cout << "////////// Apres suppression par indice (1) ////////////////////////////////////////////" << endl;
-  Timetable::getInstance().displayGroups();
+  t.displayGroups();
 
   cout << "////////// Suppression par id //////////////////////////////////////////////////////////" << endl;
   cout << "--> Suppression Group id=14" << endl << endl;
-  Timetable::getInstance().deleteGroupById(14);
+  t.deleteGroupById(14);
 
   cout << "////////// Apres suppression par id ////////////////////////////////////////////////////" << endl;
-  Timetable::getInstance().displayGroups();
+  t.displayGroups();
 }
