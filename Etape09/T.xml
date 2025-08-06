@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Timing>
+<day>
+Mardi
+</day>
+<start>
+<Time>
+<Hour>
+8
+</Hour>
+<Minute>
+20
+</Minute>
+</Time>
+</start>
+<duration>
+<Time>
+<Hour>
+2
+</Hour>
+<Minute>
+0
+</Minute>
+</Time>
+</duration>
+</Timing>
+
