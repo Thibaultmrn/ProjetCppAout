@@ -1,0 +1,3 @@
+/home/student/Bureau/LaboCpp2024_Enonce/Etape09/build/CMakeFiles/rebuild_cache.dir
+/home/student/Bureau/LaboCpp2024_Enonce/Etape09/build/CMakeFiles/Appli.dir
+/home/student/Bureau/LaboCpp2024_Enonce/Etape09/build/CMakeFiles/edit_cache.dir
