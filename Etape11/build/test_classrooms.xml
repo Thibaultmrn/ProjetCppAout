@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classrooms>
+<Classroom>
+<id>
+1
+</id>
+<name>
+ae
+</name>
+<seatingCapacity>
+100
+</seatingCapacity>
+</Classroom>
+</classrooms>
