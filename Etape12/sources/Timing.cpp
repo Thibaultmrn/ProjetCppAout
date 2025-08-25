@@ -129,11 +129,9 @@ namespace planning
 		if (day != t.day) 
 			return false;
 
-		// Calcul des plages horaires
-		Time finPremierHoraire = getStart() + getDuration();         // Heure de fin du timing actuel
-		Time finDeuxiemeHoraire = t.getStart() + t.getDuration();    // Heure de fin de l'autre timing
+		Time finPremierHoraire = getStart() + getDuration();         
+		Time finDeuxiemeHoraire = t.getStart() + t.getDuration();   
 
-		// Vérifie s'il y a un chevauchement temporel
 		if(finPremierHoraire<t.getStart() || finPremierHoraire==t.getStart())
 		return false;
 

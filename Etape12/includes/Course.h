@@ -24,7 +24,6 @@ namespace planning
             Course();
             //Course(int code, const string& title, const Timing& timing, int professorId, int classroomId);
 
-            //Accesseur
             int getProfessorId() const;
             void setProfessorId(int id);
 
@@ -33,11 +32,9 @@ namespace planning
 
             const set<int>& getGroupsIds() const;
 
-            //Methodes spécifique
             void addGroupId(int id);
             bool isGroupIdPresent(int id) const;
 
-            //operateurs de comparaison pour l'ordre chronologique basé sur timing
             bool operator<(const Course&)const;
             Course& operator=(const Course&);
     };

@@ -109,6 +109,6 @@ namespace planning
 
     bool Group::operator<(const Group& other) const 
     {
-        return this->getId() < other.getId(); // comparaison sur le nom pour <set>
+        return this->getId() < other.getId();
     }
 }

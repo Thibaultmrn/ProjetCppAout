@@ -33,7 +33,6 @@ namespace planning
 
             Group& operator=(const Group&);
 
-            /*J’ai ajouté operator< dans ma classe Group, car j’utilise un std::set<Group> dans Timetable. Le set étant un conteneur ordonné, il a besoin de comparer les objets qu’il contient. Sans operator<, le compilateur ne peut pas trier ou gérer les éléments dans le set.*/
             bool operator<(const Group& ) const ;
     };
 }

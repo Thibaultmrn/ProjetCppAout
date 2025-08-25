@@ -56,7 +56,6 @@ namespace planning {
         return false;
     }
 
-    //compare les timing
     bool Course::operator<(const Course& c)const 
     {
         return this->getTiming() < c.getTiming();
@@ -70,7 +69,7 @@ namespace planning {
 
             this->professorId = c.professorId;
             this->classroomId = c.classroomId;
-            this->groupsIds = c.groupsIds; // Le set<int> gère sa propre copie
+            this->groupsIds = c.groupsIds; 
         }
         return *this;
     }
@@ -120,37 +119,31 @@ namespace planning {
 
         getline(s, tag); // <course>
 
-        // Lecture du code
         getline(s, tag); // <code>
         getline(s, tag); 
         course.setCode(stoi(tag));
         getline(s, tag); 
 
-        // Lecture du titre
         getline(s, tag); // <title>
         getline(s, tag); 
         course.setTitle(tag.c_str());
         getline(s, tag); 
 
-        // Lecture du Timing
         getline(s, tag); // <timing>
-        s >> tmp;        // Désérialisation du Timing via son opérateur >>
+        s >> tmp;       
         course.setTiming(tmp);
         getline(s, tag); 
 
-        // Lecture de professorId
         getline(s, tag); // <professorId>
         getline(s, sProfessorId);
         course.setProfessorId(stoi(sProfessorId));
         getline(s, tag); 
 
-        // Lecture de classroomId
         getline(s, tag); // <classroomId>
         getline(s, sClassroomId);
         course.setClassroomId(stoi(sClassroomId));
         getline(s, tag); 
 
-        // Lecture de groupsIds
         getline(s, tag); // <groupsIds>
         getline(s, sGroupIds);
 

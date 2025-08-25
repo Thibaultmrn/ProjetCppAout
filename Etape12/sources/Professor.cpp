@@ -131,7 +131,7 @@ namespace planning
 
     bool Professor::operator<(const Professor& other) const 
     {
-        return this->getId() < other.getId(); // comparaison sur le id pour <set>
+        return this->getId() < other.getId(); 
     }
 
 }

@@ -501,8 +501,7 @@ void ApplicHoraireWindow::on_pushButtonAjouterProfesseur_clicked() {
         dialogError("Erreur prenom", "Le prenom du professeur ne peut pas être vide.");
         return;
     }
-
-    //recupere les professeurs et ajoute un nouveau dans la liste (a revoir pas claire)
+    
     Timetable& instance =Timetable::getInstance();
     instance.addProfessor(lastName, firstName);
 
@@ -615,7 +614,7 @@ void ApplicHoraireWindow::on_pushButtonSupprimerGroupe_clicked() {
         return;
     }
 
-    indices.sort(greater<int>());  // il faut inverser les indexes dans le containers indexes pour une bonne suppression 
+    indices.sort(greater<int>()); 
 
     Timetable& instance = Timetable::getInstance();
  
@@ -675,7 +674,6 @@ void ApplicHoraireWindow::on_pushButtonPlanifier_clicked()
             return;
         }
 
-        // Récupérer l'ID du professeur à partir de l'index sélectionné
         const auto& professor = Timetable::getInstance().getProfessors();
         auto itProfessor = professor.begin();
         advance(itProfessor, indexProfessor);
@@ -714,7 +712,6 @@ void ApplicHoraireWindow::on_pushButtonPlanifier_clicked()
         int startMinute = getMinuteStart();
         int duree = getDuration();
 
-        //exception peuvent se lancer d ici
         Time start(startHour, startMinute);
         Time duration(duree);
         Timing timing(day, start, duree);
@@ -726,7 +723,6 @@ void ApplicHoraireWindow::on_pushButtonPlanifier_clicked()
             return;
         }
 
-        // Instancier un objet Course
         Course course;
         course.setTitle(Title.c_str());
         course.setProfessorId(professorId);
@@ -741,11 +737,11 @@ void ApplicHoraireWindow::on_pushButtonPlanifier_clicked()
     }
     catch (const TimeException& e)
     {
-        dialogError("Erreur de Temps","Conflit horaire");
+        dialogError("Erreur de Temps",e.getMessage());
     }
     catch (const TimingException& e)
     {
-        dialogError("Erreur de Planification", "Conflit horaire");
+        dialogError("Erreur de Planification", e.getMessage());
     }
 }
 
@@ -782,7 +778,6 @@ void ApplicHoraireWindow::on_actionOuvrir_triggered()
     Timetable& instance = planning::Timetable::getInstance();
     instance.load(nomFichier);
 
-    // Met à jour les tables
     clearTableProfessors();
     clearTableGroups();
     clearTableClassrooms();
@@ -816,13 +811,10 @@ void ApplicHoraireWindow::on_actionNouveau_triggered()
     cout << "Clic sur Menu Fichier --> Item Nouveau" << endl;
     // TO DO (Etape 10)
     
-    // Vider tous les conteneurs
     Timetable::getInstance().vider();
 
-    // Réinitialiser l'ID des éléments
     Schedulable::setCurrentId(1);
 
-    // Vider les tables (inutile de les remplir, elles sont maintenant vides)
     clearTableProfessors();
     clearTableGroups();
     clearTableClassrooms();
@@ -844,7 +836,6 @@ void ApplicHoraireWindow::on_actionEnregistrer_triggered()
         return;
     }
     
-    // Récupérer l'instance de Timetable et appel methode save 
     Timetable& instance = planning::Timetable::getInstance();
     instance.save(nomFichier);
 

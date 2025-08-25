@@ -121,12 +121,12 @@ namespace planning {
                 return p;
             }
         }
-        return Professor(); // Retourne un objet par défaut si non trouvé
+        return Professor(); 
     }
     Professor Timetable::findProfessorByIndex(int index) const 
     {
         auto it = professors.begin();
-        std::advance(it, index);
+        advance(it, index);
         return *it;
     }
     void Timetable::deleteProfessorByIndex(int index) 
@@ -181,13 +181,13 @@ namespace planning {
     Group Timetable::findGroupByIndex(int index) const 
     {
         auto it = groups.begin();
-        std::advance(it, index);
+        advance(it, index);
         return *it;
     }
     void Timetable::deleteGroupByIndex(int index) 
     {
         auto it = groups.begin();
-        std::advance(it, index);
+        advance(it, index);
         groups.erase(it);
     }
 
@@ -206,28 +206,24 @@ namespace planning {
     }
     void Timetable::save(const string& nomFichier) 
     {
-        // Création des noms des fichiers
         string professorsFile = nomFichier + "_professors.xml";
         string groupsFile = nomFichier + "_groups.xml";
         string classroomsFile = nomFichier + "_classrooms.xml";
         string configFile = nomFichier + "_config.dat";
         string coursesFile = nomFichier + "_courses.xml";
 
-        // Sérialisation des professeurs
         XmlFileSerializer<Professor> professorSerializer(professorsFile, XmlFileSerializer<Professor>::WRITE, "professors");
         for (const auto& professor : professors) 
         {
             professorSerializer.write(professor);
         }
 
-        // Sérialisation des groupes
         XmlFileSerializer<Group> groupSerializer(groupsFile, XmlFileSerializer<Group>::WRITE, "groups");
         for (const auto& group : groups) 
         {
             groupSerializer.write(group);
         }
 
-        // Sérialisation des locaux
         XmlFileSerializer<Classroom> classroomSerializer(classroomsFile, XmlFileSerializer<Classroom>::WRITE, "classrooms");
         for (const auto& classroom : classrooms) 
         {
@@ -239,7 +235,6 @@ namespace planning {
             courseSerializer.write(course);
         }
 
-        // Sauvegarde de currentId au format binaire
         ofstream config(configFile, ios::binary);
         if (!config) 
         {
@@ -255,18 +250,16 @@ namespace planning {
     {
         try 
         {
-            // Construction des noms de fichiers
             string professorsFile = nomFichier + "_professors.xml";
             string groupsFile = nomFichier + "_groups.xml";
             string classroomsFile = nomFichier + "_classrooms.xml";
             string configFile = nomFichier + "_config.dat";
             string coursesFile = nomFichier + "_courses.xml";
-            // Vider les conteneurs existants
+
             professors.clear();
             groups.clear();
             classrooms.clear();
 
-            // Lecture de currentId depuis le fichier de configuration
             ifstream configIn(configFile, ios::binary);
             if (!configIn) 
             {
@@ -282,7 +275,6 @@ namespace planning {
             Schedulable::setCurrentId(valeur);
             configIn.close();
 
-            // Désérialisation des professeurs
             try 
             {
                 XmlFileSerializer<Professor> professorSerializer(professorsFile, XmlFileSerializer<Professor>::READ, "professors");
@@ -300,7 +292,6 @@ namespace planning {
                 }
             }
 
-            // Désérialisation des groupes
             try 
             {
                 XmlFileSerializer<Group> groupSerializer(groupsFile, XmlFileSerializer<Group>::READ, "groups");
@@ -318,7 +309,6 @@ namespace planning {
                 }
             }
 
-            // Désérialisation des locaux
             try 
             {
                 XmlFileSerializer<Classroom> classroomSerializer(classroomsFile, XmlFileSerializer<Classroom>::READ, "classrooms");
@@ -336,7 +326,6 @@ namespace planning {
                 }
             }
             
-            // Désérialisation des cours
             try 
             {
                 XmlFileSerializer<Course> courseSerializer(coursesFile, XmlFileSerializer<Course>::READ, "courses");
@@ -364,7 +353,6 @@ namespace planning {
 
     void Timetable::vider() 
     {
-        // Vide les conteneurs
         professors.clear();
         groups.clear();
         classrooms.clear();
@@ -420,13 +408,11 @@ namespace planning {
                 throw TimingException("Un des groupes n'est pas disponible à ce moment-là.",3);
         }
 
-        // Attribution du timing et du code
         c.setTiming(t);
         c.setCode(Event::currentCode+=1);
 
-        // Insère le cours dans la liste (triée chronologiquement)
         courses.push_back(c);
-        courses.sort(); // Utilise l'opérateur < de Course pour maintenir l'ordre
+        courses.sort(); 
     }
 
     string Timetable::tuple(const Course& c) const 
@@ -473,7 +459,7 @@ namespace planning {
                         ss << ", ";
                     ss << group.getName();
                     first = false;
-                    break; // Une fois trouvé, passez au prochain groupId
+                    break; 
                 }
             }
         }
@@ -559,7 +545,6 @@ namespace planning {
 
     void Timetable::exportProfessorTimetable(int id) 
     {
-        // Trouver le professeur par ID
         Professor professor = findProfessorById(id);
         if (professor.getId() == -1) 
         {
@@ -567,10 +552,8 @@ namespace planning {
             return;
         }
 
-        // Nom du fichier basé sur le nom du professeur
         string filename = professor.getLastName() + "_" + professor.getFirstName() + ".hor";
         
-        // Ouvrir le fichier
         ofstream file(filename);
         if (!file) 
         {
@@ -578,10 +561,8 @@ namespace planning {
             return;
         }
 
-        // En-tête
         file << "Horaire de " << professor.getLastName() << " " << professor.getFirstName() << " :\n\n";
 
-        // Parcourir les cours et écrire ceux associés au professeur
         for (const auto& course : courses) 
         {
             if (course.getProfessorId() == id) 
@@ -592,7 +573,6 @@ namespace planning {
                 file << findClassroomById(course.getClassroomId()).getName() << "\t";
                 file << course.getTitle() << "\t";
 
-                // Groupes associés
                 bool first = true;
                 for (int groupId : course.getGroupsIds()) 
                 {
@@ -609,7 +589,6 @@ namespace planning {
 
     void Timetable::exportGroupTimetable(int id) 
     {
-        // Trouver le groupe par ID
         Group group = findGroupById(id);
         if (group.getId() == -1) 
         {
@@ -617,10 +596,8 @@ namespace planning {
             return;
         }
 
-        // Nom du fichier basé sur le nom du groupe
         string filename = group.getName() + ".hor";
         
-        // Ouvrir le fichier
         ofstream file(filename);
         if (!file) 
         {
@@ -628,10 +605,8 @@ namespace planning {
             return;
         }
 
-        // En-tête
         file << "Horaire de " << group.getName() << " :\n\n";
 
-        // Parcourir les cours et écrire ceux associés au groupe
         for (const auto& course : courses) 
         {
             if (course.isGroupIdPresent(id)) 
@@ -642,7 +617,6 @@ namespace planning {
                 file << findClassroomById(course.getClassroomId()).getName() << "\t";
                 file << course.getTitle() << "\t";
 
-                // Professeur associé
                 file << findProfessorById(course.getProfessorId()).getLastName() << " ";
                 file << findProfessorById(course.getProfessorId()).getFirstName() << "\n";
             }
@@ -653,7 +627,6 @@ namespace planning {
 
     void Timetable::exportClassroomTimetable(int id) 
     {
-        // Trouver le local par ID
         Classroom classroom = findClassroomById(id);
         if (classroom.getId() == -1) 
         {
@@ -661,10 +634,8 @@ namespace planning {
             return;
         }
 
-        // Nom du fichier basé sur le nom du local
         string filename = classroom.getName() + ".hor";
         
-        // Ouvrir le fichier
         ofstream file(filename);
         if (!file) 
         {
@@ -672,10 +643,8 @@ namespace planning {
             return;
         }
 
-        // En-tête
         file << "Horaire de " << classroom.getName() << " :\n\n";
 
-        // Parcourir les cours et écrire ceux associés au local
         for (const auto& course : courses) 
         {
             if (course.getClassroomId() == id) 
@@ -685,11 +654,9 @@ namespace planning {
                 file << course.getTiming().getDuration().toString() << "\t";
                 file << course.getTitle() << "\t";
 
-                // Professeur associé
                 file << findProfessorById(course.getProfessorId()).getLastName() << " ";
                 file << findProfessorById(course.getProfessorId()).getFirstName() << "\t";
 
-                // Groupes associés
                 bool first = true;
                 for (int groupId : course.getGroupsIds()) 
                 {
